@@ -51,6 +51,12 @@ To follow this guide, you will need:
 * Any text editor
 * A Github account and a Git client
 
+### Legend
+
+* Navigate: A -> B -> C means, "click through the prompts in the Azure Portal in this order"
+* __Bold__ means, "click the control with this label
+* `monospaced text` means, "this is the value you should enter into the field"
+
 ## Step 0: Fork this repo
 
 Start by forking this repo on Github. It contains the minimum-viable frontend code that you'll need to update with your configuration values.
@@ -58,3 +64,15 @@ Start by forking this repo on Github. It contains the minimum-viable frontend co
 ## Step 1: Create and deploy a new Azure Static App
 
 The `frontend` folder in this Github repo contains the skeleton of a SPA that is wired in to [MSAL.js 2.0](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-js-initializing-client-applications), with functions created to manage login and function app execution. The skeleton can run, now; the auth stuff won't work, but the skeleton is ready to be deployed.
+
+### Create a resource group for your assets
+
+While not strictly necessary - you can re-use an existing resource group if you have one - making a new resource group will allow you to delete all of your demo assets when you're done with them. If you don't create a new resource group, _make sure that all of the resources you create in Azure are in the same resource group!_.
+
+. Navigate: Resource groups
+	1. `Create`
+		1. Subscription: Select your subscription
+		1. Resource group: `spaFunctionAppADAuthGuide`
+		1. Region: Select a region that's close to you. I picked `(US) East US)`.
+		1. __Review + create__
+		1. __Create__
