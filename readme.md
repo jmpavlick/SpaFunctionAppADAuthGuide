@@ -50,3 +50,11 @@ To follow this guide, you will need:
 * Visual Studio 2019 with the Azure workload
 * Any text editor
 * A Github account and a Git client
+
+## Step 0: Fork this repo
+
+Start by forking this repo on Github. It contains the minimum-viable frontend code that you'll need to update with your configuration values.
+
+## Step 1: Create and deploy a new Azure Static App
+
+The `frontend` folder in this Github repo contains the skeleton of a SPA that is wired in to [MSAL.js 2.0](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-js-initializing-client-applications), with functions created to manage login and function app execution. The skeleton can run, now; the auth stuff won't work, but the skeleton is ready to be deployed.
