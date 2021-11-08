@@ -54,7 +54,7 @@ To follow this guide, you will need:
 ### Legend
 
 * Navigate: A -> B -> C means, "click through the prompts in the Azure Portal in this order"
-* __Bold__ means, "click the control with this label
+* __Bold__ means, "click the control with this label"
 * `monospaced text` means, "this is the value you should enter into the field"
 
 ## Step 0: Fork this repo
@@ -69,10 +69,29 @@ The `frontend` folder in this Github repo contains the skeleton of a SPA that is
 
 While not strictly necessary - you can re-use an existing resource group if you have one - making a new resource group will allow you to delete all of your demo assets when you're done with them. If you don't create a new resource group, _make sure that all of the resources you create in Azure are in the same resource group!_.
 
+On the Azure portal:
+
 * Navigate: Resource groups
-	1. __Create__
+	* __Create__
 		1. Subscription: Select your subscription
 		1. Resource group: `spaFunctionAppADAuthGuide`
 		1. Region: Select a region that's close to you. I picked `(US) East US)`.
 		1. __Review + create__
 		1. __Create__
+
+### Create a new Static Web App
+
+Next, you will create an Azure Static Web App to host your `index.html` and Javascript code from the `frontend` folder on your Github fork.
+
+On the Azure portal:
+
+* Navigate: Static Web Apps
+	* __Create__
+		1. Subscription: Select your subscription
+		1. Resource group: `spaFunctionAppADAuthGuide`
+		1. Name: `frontend`
+		1. Plan type: `Standard`
+			* Note: Free tier isn't eligible for Azure AD login
+		1. Region for Azure Functions API and staging environments: Select a region that's close to you. I picked `East US 2`.
+		1. Source: `GitHub`
+		1. __Sign in with GitHub__
