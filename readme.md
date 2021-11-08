@@ -31,3 +31,22 @@ However, if you want to use Azure Active Directory (referred to henceforth as "A
 With these concepts introduced, we can look at a more complex flow diagram:
 
 ![Flow Diagram](./readme-images/flow-diagram.svg)
+
+This probably looks complicated. It's really not. From 30,000 feet, all of those flow steps are experienced user-side like this:
+
+1. User visits your page and clicks "Sign In"
+1. User is redirected to sign in with his Azure AD domain credentials
+1. User is redirected back to your page, with a JWT that's saved into local storage
+1. All of user's requests to your function app are authenticated with the JWT that he got from signing in
+
+## Getting started
+
+This repo comes with batteries included; all you have to do is snap everything together. To explain these concepts, I've followed the path of least resistance to get a minimum-viable example up and running. If you want to template out your manifests or use Azure CI/CD pipelines or whatever, that's fine, but follow this guide _first_ - then if things go wrong, you'll have a better understanding of what's happening here so that you know where to look.
+
+To follow this guide, you will need:
+
+* A Microsoft Azure subscription
+	* NOTE: At time of writing, you can't integrate with Azure AD with a "free tier" subscription
+* Visual Studio 2019 with the Azure workload
+* Any text editor
+* A Github account and a Git client
