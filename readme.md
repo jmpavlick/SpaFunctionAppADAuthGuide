@@ -69,7 +69,7 @@ The `frontend` folder in this Github repo contains the skeleton of a SPA that is
 
 While not strictly necessary - you can re-use an existing resource group if you have one - making a new resource group will allow you to delete all of your demo assets when you're done with them. If you don't create a new resource group, _make sure that all of the resources you create in Azure are in the same resource group!_.
 
-. Navigate: Resource groups
+* Navigate: Resource groups
 	1. `Create`
 		1. Subscription: Select your subscription
 		1. Resource group: `spaFunctionAppADAuthGuide`
