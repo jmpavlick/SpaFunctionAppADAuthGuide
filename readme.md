@@ -75,7 +75,7 @@ On the Azure portal:
 	* __Create__
 		1. Subscription: Select your subscription
 		1. Resource group: `spaFunctionAppADAuthGuide`
-		1. Region: Select a region that's close to you. I picked `(US) East US)`.
+		1. Region: Select a region that's close to you. I picked `(US) East US`.
 		1. __Review + create__
 		1. __Create__
 
@@ -85,7 +85,7 @@ Next, you will create an Azure Static Web App to host your `index.html` and Java
 
 On the Azure portal:
 
-* Navigate: Static Web Apps
+1. Navigate: Static Web Apps
 	* __Create__
 		1. Subscription: Select your subscription
 		1. Resource group: `spaFunctionAppADAuthGuide`
@@ -95,3 +95,71 @@ On the Azure portal:
 		1. Region for Azure Functions API and staging environments: Select a region that's close to you. I picked `East US 2`.
 		1. Source: `GitHub`
 		1. __Sign in with GitHub__
+			1. When prompted, __Authorize Azure-App-Service-Static-Web-Apps__, input your password, etc
+		1. Organization: Select the organization that contains your fork of this repo - I selected `jmpavlick`
+		1. Repository: Select your fork - I selected `SpaFunctionAppADAuthGuide-Fork`
+		1. Branch: `master`
+		1. Build Presets: `Custom`
+		1. App location: `/frontend`
+		1. Api location: Leave blank
+		1. Output location: Leave blank
+		1. __Review + create__
+		1. __Create__
+1. You'll be redirected to a page that says "Your deployment is complete". Click __Go to resource__
+1. Open a new browser tab. Navigate to your fork in Github, and click __Actions__. You'll be able to see the Github Actions CI run that was triggered by your creating the Static Web App in Azure. Every time you push to `master`, Github Actions will re-deploy the contents of your `frontend` folder to your `frontend` Static Web App.
+1. Once it turns green, go back to your Azure Portal tab. You should see the overview for your `frontend` resource.
+1. Click on the URL in the `url` field - mine is `https://wonderful-mud-0fb8a610f.azurestaticapps.net/`.
+	* You should see your `index.html` page, live on the Internet!
+
+#### Check your progress
+
+Before moving on to the next step, every statement on the following list should be true:
+
+1. You forked this repo on Github
+1. You created a new resource group in Azure (or chose to use an existing one)
+1. You created a Static Web App inside of your resource group, called `frontend`
+1. You deployed the `frontend` folder of your Github fork to your Azure Static Web App
+1. You can reach it in your browser via its address displayed in the Azure portal
+
+## Step 2: Create and deploy a new Azure Function App
+
+If you haven't cloned your fork yet locally, now would be a great time to do that. If you have - make sure to run `git pull origin master` before continuing; in the last step, when you linked the Github repo to the Azure Static Web App, Azure created a YAML file in the repo at `.github/workflows` that tells Github Actions what files to deploy to your Static Web App every time you deploy.
+
+I know that the "cool" way to do Function App development is to use VSCode and a whole slew of plugins. For simplicity's sake, I chose to just use Visual Studio 2019 for this portion of the guide.
+
+In this section, we're going to create a simple "Hello World" HTTP-triggered Azure Function App that responds to a HTTP GET request. Open Visual Studio and let's get started.
+
+1. __Create a new project__
+1. In the "Search for templates" box, search for the `Azure Functions` template; whenit comes up in the list, select it and click __Next__
+	1. Project name: `backend`
+	1. Location: `path\to\your\fork\` - mine is `C:\Users\john\src\SpaFunctionAppADAuthGuide-Fork\`
+	1. Solution name: `backend`
+	1. Place solution and project in the same directory: Leave unchecked
+	1. __Create__
+		1. Set the .NET version to `.NET Core 3 (LTS)` (this is the default on my computer)
+		1. Select `Http trigger` from the list
+		1. Storage account: `Storage emulator`
+		1. Authorization level: `Anonymous`
+		1. __Create__
+1. Awesome. You should be redirected to the main Visual Studio view, with `Function1.cs` open in the editor.
+1. In the Solution Explorer, right-click `backend` and click `Publish`
+	1. Select `Azure`
+	1. __Next__
+	1. Select `Azrue Funciton App (Linux)` (it's cheaper!)
+	1. __Next__
+	1. Subscription name: Select your subscription
+	1. Click the green __+__ icon above the Function Apps window to create a new Function App in Azure
+		1. Name: Function app names have to be unique _within Azure_; I'm calling mine `backend-jmp`. You can call yours something else, but when you see `backend-jmp` in this tutorial, know that I'm referring to the backend function app.
+		1. Subscription name: Select your subscription
+		1. Resource group: `spaFunctionAppADAuthGuide`
+			* Note: Visual Studio will automatically select the first resource group in your subscription, in alphabetical order - don't get this wrong!
+		1. Plan type: `Consumption`
+		1. Location: Select a region that's close to you. I picked `East US`.
+		1. Azure Storage: Click __New__, leave the defaults, and click __OK__.
+			* Note: You won't have to directly interact with Azure Storage for this guide, but your Function App still needs somewhere to _live_ on Azure. If you create a new Azure Storage container for it, it'll be deleted when you get rid of your `spaFunctionAppADAuthGuide` resource group when you're done.
+		1. __Create__
+	1. __Finish__
+1. You just created a _publish profile_, and you've created deployment slots in Azure for your function app, but you haven't actually published the function app yet. You should now see a tab in Visual Studio called `backend: Publish`. Click the big __Publish__ button.
+	* Note: It seems like sometimes, publishing fails with an unhelpful error message: _"Publish has encountered an error. We were unable to determine the cause of the error."_, with no useful information in the log file. If this happens - log in to the Azure Portal, navigate to the function app and click __Stop__; then try publishing again.
+1. In a web browser, navigate to `https://backend-jmp.azurewebsites.net/api.function1`(substituting your `backend` function app's name for `backend-jmp`). You should see a message:
+	* > This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.
