@@ -111,7 +111,7 @@ On the Azure portal:
 1. Click on the URL in the `url` field - mine is `https://wonderful-mud-0fb8a610f.azurestaticapps.net/`.
 	* You should see your `index.html` page, live on the Internet!
 
-#### Check your progress
+### Check your progress
 
 Before moving on to the next step, every statement on the following list should be true:
 
@@ -145,11 +145,13 @@ In this section, we're going to create a simple "Hello World" HTTP-triggered Azu
 1. In the Solution Explorer, right-click `backend` and click `Publish`
 	1. Select `Azure`
 	1. __Next__
-	1. Select `Azrue Funciton App (Linux)` (it's cheaper!)
+	1. Select `Azure Funciton App (Linux)` (it's cheaper!)
 	1. __Next__
 	1. Subscription name: Select your subscription
 	1. Click the green __+__ icon above the Function Apps window to create a new Function App in Azure
-		1. Name: Function app names have to be unique _within Azure_; I'm calling mine `backend-jmp`. You can call yours something else, but when you see `backend-jmp` in this tutorial, know that I'm referring to the backend function app.
+		1. Name: Function app names have to be unique _within Azure_; I'm calling mine `backend-jmp`.
+			* Moving forward, I'm going to refer to my Function App as `backend-jmp`; it might be a good idea to do a find-and-replace in this document on your fork, and replace `backend-jmp` with whatever you call your app! Commit, push, and just keep following this readme from your fork's Github page.
+			* I know it may sound silly, but it always bugs me when I'm following a guide and I have to mentally substitute my asset name for the asset name in front of me. It's a whole class of typos and misconfigurations that can be completely avoided if you use the same name as the author of the guide.
 		1. Subscription name: Select your subscription
 		1. Resource group: `spaFunctionAppADAuthGuide`
 			* Note: Visual Studio will automatically select the first resource group in your subscription, in alphabetical order - don't get this wrong!
@@ -161,5 +163,84 @@ In this section, we're going to create a simple "Hello World" HTTP-triggered Azu
 	1. __Finish__
 1. You just created a _publish profile_, and you've created deployment slots in Azure for your function app, but you haven't actually published the function app yet. You should now see a tab in Visual Studio called `backend: Publish`. Click the big __Publish__ button.
 	* Note: It seems like sometimes, publishing fails with an unhelpful error message: _"Publish has encountered an error. We were unable to determine the cause of the error."_, with no useful information in the log file. If this happens - log in to the Azure Portal, navigate to the function app and click __Stop__; then try publishing again.
-1. In a web browser, navigate to `https://backend-jmp.azurewebsites.net/api.function1`(substituting your `backend` function app's name for `backend-jmp`). You should see a message:
+1. In a web browser, navigate to `https://backend-jmp.azurewebsites.net/api/Function1` - you should see a message:
 	* > This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.
+
+`Ctrl+Shift+S` in Visual Studio to save your Publish Profile to the solution, commit, and push.
+
+Right now, your Function App is live on the public Internet and has zero authentication protecting it from unauthorized access; soon, we will change that.
+
+### Check your progress
+
+Before moving on to the next step, every statement on the following list should be true:
+
+1. You have created a Function App called `backend`
+1. You have published it to Azure, in your `spaFunctionAppADAuthGuide` resource group
+1. You can reach it on the public Internet, at your URL
+
+As we move forward - if something gets misconfigured while setting up the App Registrations, etc - you can delete the App Registrations and start over from here. (I had to do it a few times before I got the hang of it.)
+
+## Step 3: Create an App Registration for your `backend-jmp` Function App
+
+Next, we'll create the App Registration for `backend-jmp`.
+
+On the Azure Portal:
+
+1. Navigate to Azure Active Directory -> App registrations (it's under "Manage", on the sidebar) and click __New registration__:
+	1. Name: `backendAppRegistration`
+	1. Supported account types: `Accounts in this organizational directory only (Default Directory only - Single tenant)`
+		* Note: This guide is _for_ this particular setup; the subsequent steps assume this configuration value.
+	1. Redirect URI: `Web` `https://backend-jmp.azurewebsites.net/.auth/login/aad/callback`
+	1. __Register__
+1. You will be redirected to the `backendAppRegistration` App Registration overview. You will come back here later to get the Application (client) ID and Directory (tenant) ID values; or, you can copy them into a text file now. If you lose them, you can always find them here.
+1. Navigate to Authentication:
+	1. Under "Implicit grant and hybrid flows", check the box for `ID tokens (used for implicit and hybrid flows)`
+	1. __Save__
+
+## Step 4: Expose the `backend-jmp` Function App as an API
+
+On the Azure Portal, starting at the `backendAppRegistration` page:
+
+* Navigate to Expose an API -> __Set__ (next to "Application ID URI")
+	1. The field will auto-populate with a value; click __Save__.
+	1. __Add a scope__
+		1. Scope name: `user_impersonation`
+		1. Who can consent? `Admins only`
+		1. Admin consent display name: `Access spaFunctionAppADAuthGuide`
+		1. Admin consent description: `Access spaFunctionAppADAuthGuide`
+		1. User consent display name: `Access spaFunctionAppADAuthGuide`
+		1. User consent description: `Access spaFunctionAppADAuthGuide`
+			* Note: The above four fields are what your user will see when he access the Azure function for the first time; you can change this verbiage if you want to. And you can change it later, too, so don't worry about it too much now - just make sure that the fields aren't empty.
+		1. __Save__
+
+## Step 5: Enable Azure AD for the `backend-jmp` Function App
+
+Next, we will enable Azure AD for `backend-jmp` and link it to the `backendAppRegistration` App Registration that we just created. While you _can_ do these steps at the same time in Azure - creating a new app registration as part of the flow of adding the identity provider - Azure creates it with configuration values that are wrong for our use-case, so it's _much_ better to do it this way.
+
+On the Azure Portal, starting at the `backend-jmp` page:
+
+* Navigate to Authentication (under "Settings" in the sidebar) -> __Add identity provider__:
+	1. Identity provider: `Microsoft`
+	1. App registration type: `Pick an existing app registration in this directory`
+	1. Name or app ID: `backendAppRegistration`
+	1. Issuer URL:
+		1. Go to your `backendAppRegistration`'s overview page and copy the Directory (tenant) ID, if you didn't copy it off earlier
+		1. Create this value as `https://login.microsoftonline.com/[your Directory (tenant) ID value]/` _and make SURE_ that the value in this field doesn't end in `/v2.0`
+			* Mine is `https://login.microsoftonline.com/61f0b886-8759-40ba-9987-299b74240718`, to give you an idea. Don't use mine. Just use that format.
+	1. Restrict access: `Require authentication`
+	1. Unauthenticated requests: `HTTP 401 Unauthorized: recommended for APIs`
+	1. Token store: `Checked`
+	1. __Add__
+
+Now, paste your Function App's URL into a web browser: `https://backend-jmp.azurewebsites.net/api/function1` - you should get a `401 Unauthorized` response. (You may have to check the Network tab of your browser's dev tools to verify that you are getting a `401` - but if you don't see a response in the browser, that's a clue that you're on the right track.)
+
+### Check your progress
+
+Before moving on to the next step, every statement on the following list should be true:
+
+1. You have created an App Registration for your `backend-jmp` Function App, called `backendAppRegistration`
+1. You have exposed the `backend-jmp` Function App as an API
+1. You have enabled Azure AD with the Microsoft identity for your `backend-jmp` Function App
+1. A HTTP GET request to `https://backend-jmp.azurewebsites.net/api/function1` returns a `401 Unauthorized` response
+
+## Don't forget - logging in as a user in your organization vs logging in as your own user
