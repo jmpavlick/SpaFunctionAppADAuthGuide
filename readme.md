@@ -261,6 +261,17 @@ On the Azure portal:
 
 ## Step 7: Update your `frontend` SPA to sign in with Azure AD
 
-Whew. That's a lot of configuration. Almost done. Next, we're going to update our `frontend`
+Whew. That's a lot of configuration. Almost done. Next, we're going to update our `frontend` SPA code to sign in with Azure AD.
+
+In your fork repo:
+
+1. Open `frontend/authConfig.js` in a text editor
+1. Set the value for `clientId` to your `frontendAppRegistration`'s Application (client) ID value - mine is `1ab03ee3-0fe9-4b5e-9e21-5819ffe54180`
+1. Set the value for `authority` to the value you created for the "Issuer URL" field in Step 5 - mine is `https://login.microsoftonline.com/61f0b886-8759-40ba-9987-299b74240718`
+1. Set the value for `redirectUri` to your `frontend` SPA's URL - mine is `https://wonderful-mud-0fb8a610f.azurestaticapps.net/`
+1. Commit and push. Go to Github, navigate to your fork repo and go to the Actions tab. When the deployment goes green, access your SPA's URL in the browser
+
+
 
 ## Don't forget - logging in as a user in your organization vs logging in as your own user
+## Check in with seeing about logout and the logout redirect URL - it's in Step 6
