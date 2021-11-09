@@ -12,6 +12,8 @@ These things would seem to not be very difficult; and they are not difficult, bu
 
 I have gone through great pains to understand this small body of knowledge well enough to write about it here; my wish is to circumnavigate that painful element for anyone who comes after me, who should wish to understand it as I do.
 
+Special thanks to [Janne Hansen's great blog post](https://jannehansen.com/call-aad-functions-from-spa/) that demystified much of this for me. I copied some of his code outright for the frontend sample, and heavily referenced his work while learning about these things. The difference between Janne and myself, is that he is a cloud solution architect at Microsoft; I have been using Azure in earnest for about four days. My guide here is an extension of his, that presumes very little prior understanding of Azure, and takes great pains to explicitly guide the reader around footguns that I experienced due to my own lack of experience and context.
+
 So let's begin.
 
 ## A brief overview
