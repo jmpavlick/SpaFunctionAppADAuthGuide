@@ -243,4 +243,24 @@ Before moving on to the next step, every statement on the following list should 
 1. You have enabled Azure AD with the Microsoft identity for your `backend-jmp` Function App
 1. A HTTP GET request to `https://backend-jmp.azurewebsites.net/api/function1` returns a `401 Unauthorized` response
 
+## Step 6: Create an App Registration for your `frontend` SPA and Enable Azure AD
+
+On the Azure portal:
+
+1. Navigate to Azure Active Directory -> App registrations (under "Manage" in the sidebar) -> __New registration__:
+	1. Name: `frontendAppRegistration`
+	1. Who can use this application or access this API? `Accounts in this organizational directory only (Default directory only - Single tenant)
+	1. Redirect URI: Leave blank
+	1. __Register__
+1. You will be redirected to the `frontendAppRegistration` App Registration overview. Navigate to Authentication -> __Add a platform__
+	1. __Single-page application__
+	1. Redirect URIs: Enter the URL of your SPA - mine is `https://wonderful-mud-0fb8a610f.azurestaticapps.net/`
+	1. Front-channel logout URL: Leave empty
+	1. Implicit grand and hybrid flows: Leave both checkboxes empty
+	1. __Configure__
+
+## Step 7: Update your `frontend` SPA to sign in with Azure AD
+
+Whew. That's a lot of configuration. Almost done. Next, we're going to update our `frontend`
+
 ## Don't forget - logging in as a user in your organization vs logging in as your own user
