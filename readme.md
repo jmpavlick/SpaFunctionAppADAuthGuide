@@ -259,7 +259,18 @@ On the Azure portal:
 	1. Implicit grand and hybrid flows: Leave both checkboxes empty
 	1. __Configure__
 
-## Step 7: Update your `frontend` SPA to sign in with Azure AD
+## (Optional) Step 7: Configure your domain user
+
+If you created your own Azure account, you likely did so with your Microsoft login - mine is `jmpavlick@gmail.com`. Your Microsoft login is _not a member of your Azure AD domain_. If you are just a member of an organization with an Azure AD domain account that has the rights to perform all of these actions in Azure, you don't need to follow this step - but if you just created your own Azure subscription to follow along with this and you are logged in with your Microsoft login, you have to gain access to an account inside of your Azure AD domain.
+
+Here's how I did it - on the Azure portal:
+
+1. Navigate to Azure Active Directory -> Users. You should see a user with your name, and a user principal that's derived from your Microsoft login - mine is `jmpavlick_gmail.com#EXT#@jmpavlickgmail.onmicrosoft.com`.
+1. __Reset password__ and follow the password-reset flow.
+
+Moving forward in this guide, you will use this account - not your Microsoft login - to authenticate.
+
+## Step 8: Update your `frontend` SPA to sign in with Azure AD
 
 Whew. That's a lot of configuration. Almost done. Next, we're going to update our `frontend` SPA code to sign in with Azure AD.
 
@@ -270,8 +281,24 @@ In your fork repo:
 1. Set the value for `authority` to the value you created for the "Issuer URL" field in Step 5 - mine is `https://login.microsoftonline.com/61f0b886-8759-40ba-9987-299b74240718`
 1. Set the value for `redirectUri` to your `frontend` SPA's URL - mine is `https://wonderful-mud-0fb8a610f.azurestaticapps.net/`
 1. Commit and push. Go to Github, navigate to your fork repo and go to the Actions tab. When the deployment goes green, access your SPA's URL in the browser
+1. __Click here to sign in!__
 
+At this point, you should be redirected to a Microsoft sign-in page. Enter credentials for an account on your Azure AD domain and follow the sign-in flow.
 
+If everything works, you will be redirected back to your SPA, and under the "Account info" section, you will see a JSON representation of your Azure AD domain account info.
 
-## Don't forget - logging in as a user in your organization vs logging in as your own user
-## Check in with seeing about logout and the logout redirect URL - it's in Step 6
+### Check your progress
+
+Before moving on to the next step, every statement in the following list should be true:
+
+1. You have access to an Azure AD domain account in your domain
+1. You can successfully authenticate to your Azure AD domain from your SPA's page
+1. You are redirected back to your SPA after authentication, and can see a JSON reprsentation of your Azure AD domain account info.
+
+### Step 9: Give the `frontend` SPA access to the `backend-jmp` API
+
+TODO, I'm exhausted.
+
+### Step 10: Configure CORS
+
+## TODO: Check in with seeing about logout and the logout redirect URL - it's in Step 6
